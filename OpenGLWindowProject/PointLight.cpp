@@ -2,18 +2,32 @@
 #include "OpenGL.h"
 #include <glm/gtc/type_ptr.hpp>
 
+PointLight::PointLight(glm::vec4 position, glm::vec3 attenuation, SimpleObject3D *body)
+	: Light(position),
+	  m_attenuation(attenuation), 
+	  m_body(body)
+{}
+
 PointLight::PointLight( glm::vec4 position, glm::vec4 ambient,
 						glm::vec4 diffuse,  glm::vec4 specular,
 						glm::vec3 attenuation, SimpleObject3D* body)
-	: m_position(position), m_ambient(ambient),
-	m_diffuse(diffuse), m_specular(specular),
-	m_attenuation(attenuation), m_body(body)
+	: Light(position, ambient, diffuse, specular), 
+	  m_attenuation(attenuation), m_body(body)
 {}
+
+void PointLight::setAttenuation(glm::vec3 attenuation)
+{
+	m_attenuation = attenuation;
+}
+
+void PointLight::setBody(SimpleObject3D* body)
+{
+	m_body = body;
+}
 
 void PointLight::draw(const ShaderProgram& program) const
 {
-	set(program);
-	m_body->draw(program);
+	if(m_body) m_body->draw(program);
 }
 
 void PointLight::rotate(float angle, const glm::vec3& r)
@@ -38,10 +52,10 @@ glm::mat4 PointLight::getModel() const
 
 void PointLight::set(const ShaderProgram& program) const
 {
-	glUniform4fv(glGetUniformLocation(program, "light.position"), 1, glm::value_ptr(m_position));
-	glUniform4fv(glGetUniformLocation(program, "light.ambient"), 1, glm::value_ptr(m_ambient));
-	glUniform4fv(glGetUniformLocation(program, "light.diffuse"), 1, glm::value_ptr(m_diffuse));
-	glUniform4fv(glGetUniformLocation(program, "light.specular"), 1, glm::value_ptr(m_specular));
+	Light::set(program);
 	glUniform3fv(glGetUniformLocation(program, "light.attenuation"), 1, glm::value_ptr(m_attenuation));
+	draw(program);
 	OPENGL_CHECK_FOR_ERRORS();
 }
+
+PointLight::~PointLight() {}
