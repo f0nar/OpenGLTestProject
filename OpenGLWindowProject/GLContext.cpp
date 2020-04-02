@@ -1,10 +1,11 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "Mouse.h"
 #include "OpenGL.h"
 #include "GLContext.h"
+#include "SpotLight.h"
 #include "PointLight.h"
 #include "DirectionalLight.h"
-#include "SpotLight.h"
 #include "GLContextDescriptor.h"
 #include <glm/gtc/type_ptr.hpp>
 
@@ -50,7 +51,6 @@ static SpotLight spotLight(spotLightPos, spotLightDirection);
 
 GLContext::GLContext(GLContextDescriptor *_glContextDescriptor) 
 	: glContextDescriptor(_glContextDescriptor),
-	  m_program(spotLightVertexShaderPath, spotLightFragmentShaderPath),
 	  m_camera(cameraPos, cameraTarget, upVector)
 {
 	initialize();
@@ -59,12 +59,12 @@ GLContext::GLContext(GLContextDescriptor *_glContextDescriptor)
 
 void GLContext::render()
 {
-	m_camera.draw(m_program);
+	m_camera.draw(*m_program);
 
 	const int drawObjectCount = m_drawObjects.size();
 	for (int i = 0; i < drawObjectCount; ++i)
 	{
-		m_drawObjects[i]->draw(m_program);
+		m_drawObjects[i]->draw(*m_program);
 	}
 
 	SwapBuffers(glContextDescriptor->getDisplayContext());
@@ -79,10 +79,12 @@ void GLContext::initialize()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
+	m_mouse = GetMouse();
+
 	//pointlight
 	pointLightProgram = new ShaderProgram(pointLightVertexShaderPath, pointLightFragmentShaderPath);
-	lightPointMaterial.loadTexture(m_program, lightPointTexture);
-	Sphere* sphere = new Sphere(m_program, lightPointMaterial);
+	lightPointMaterial.loadTexture(*m_program, lightPointTexture);
+	Sphere* sphere = new Sphere(*m_program, lightPointMaterial);
 	sphere->translate(pointLightPos);
 	sphere->scale(0.1f);
 	pointLight.setBody(sphere);
@@ -104,10 +106,10 @@ void GLContext::initialize()
 
 	//choose light type
 	m_light = &spotLight;
-	m_program = *spotLightProgram;
+	m_program = spotLightProgram;
 
-	sphereMaterial.loadTexture(m_program, sphereTexture);
-	sphere = new Sphere(m_program, sphereMaterial);
+	sphereMaterial.loadTexture(*m_program, sphereTexture);
+	sphere = new Sphere(*m_program, sphereMaterial);
 	sphere->scale(0.6);
 	m_drawObjects.push_back(sphere);
 
@@ -124,15 +126,31 @@ void GLContext::clear()
 
 void GLContext::set()
 {
-	m_program.use();
-	m_light->set(m_program);
+	m_program->use();
+	m_light->set(*m_program);
 
-	glUniformMatrix4fv(glGetUniformLocation(m_program, "transform.projection"), 1, GL_FALSE, glm::value_ptr(m_projectionMatrix));
+	glUniformMatrix4fv(glGetUniformLocation(*m_program, "transform.projection"), 1, GL_FALSE, glm::value_ptr(m_projectionMatrix));
 }
 
 void GLContext::update()
 {
 
+	static ScreenPoint prevPos = m_mouse->getCurrentPos();
+	if (!m_mouse) return;
+	if (m_mouse->isLButtonPressed()) {
+		ScreenPoint currPos = m_mouse->getCurrentPos();
+
+		glm::vec3 rotate = glm::vec3(-(currPos.x - prevPos.x), currPos.y - prevPos.y, 0.0f);
+		m_camera.rotate(0.0f, rotate);
+
+		prevPos = currPos;
+	}
+
+	if (m_mouse->isRButtonPressed())
+	{
+		m_light = &pointLight;
+		m_program = pointLightProgram;
+	}
 }
 
 void GLContext::mainLoop()
@@ -140,6 +158,7 @@ void GLContext::mainLoop()
 	while (glContextDescriptor->isRunning())
 	{
 		clear();
+		update();
 		set();
 		render();
 	}

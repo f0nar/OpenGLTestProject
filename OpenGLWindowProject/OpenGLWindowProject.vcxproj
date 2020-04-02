@@ -151,12 +151,14 @@
     <ClCompile Include="Loger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="OpenGL.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="WindProc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -168,6 +170,7 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="Loger.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Mouse.h" />
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="ShaderProgram.h" />

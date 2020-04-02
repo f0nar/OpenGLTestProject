@@ -4,17 +4,41 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
-void Camera::rotate(float angle,const glm::vec3 &r)
-{}
+void Camera::rotate(float angle, const glm::vec3 &r)
+{
+    float xOffset = r.x * 0.25f;
+    float yOffset = r.y * 0.25f;
+
+    m_yaw += xOffset;
+    m_pitch += yOffset;
+    /*
+    if (m_pitch > 89.0f)
+        m_pitch = 89.0f;
+    if (m_pitch < -89.0f)
+        m_pitch = -89.0f;
+*/
+    updateModel();
+}
 
 void Camera::translate(const glm::vec3 &t)
-{}
+{
+    
+}
 
 void Camera::scale(float scale)
 {}
 
 void Camera::updateModel()
 {
+
+    glm::vec3 front;
+    front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+    front.y = sin(glm::radians(m_pitch));
+    front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+    m_targetPos = m_position + glm::normalize(front);
+    m_rightVector = glm::normalize(glm::cross(m_targetPos, m_upVector));  
+    m_upVector = glm::normalize(glm::cross(m_rightVector, m_targetPos));
+
     m_model = glm::lookAt(m_position, m_targetPos, m_upVector);
 }
 
@@ -32,7 +56,9 @@ glm::mat4 Camera::getModel() const
 Camera::Camera(glm::vec3 pos, glm::vec3 front, glm::vec3 up)
     : m_position(pos),
       m_targetPos(front),
-      m_upVector(up)
+      m_upVector(up), 
+      m_yaw(-90.0f),
+      m_pitch(0.0f)
 {
     updateModel();
 }

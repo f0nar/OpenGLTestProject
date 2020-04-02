@@ -5,17 +5,20 @@
 #include "Camera.h"
 #include <glm/glm.hpp>
 
+class Mouse;
 class GLContextDescriptor;
 struct GLWindow;
 
 class GLContext
 {
-	GLContextDescriptor *glContextDescriptor;
-	ShaderProgram m_program;
-	Camera m_camera;
+	Mouse* m_mouse;
 	Light* m_light;
-	std::vector<SimpleObject3D*> m_drawObjects;
+	Camera m_camera;
+	ShaderProgram* m_program;
 	glm::mat4 m_projectionMatrix;
+	GLContextDescriptor *glContextDescriptor;
+	std::vector<SimpleObject3D*> m_drawObjects;
+
 	void render();
 	void initialize();
 	void update();

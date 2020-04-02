@@ -8,8 +8,6 @@ const wchar_t GLWindowClassConstructor::GLWindowClassName[] = L"GLWindow_class";
 bool GLWindowClassConstructor::isRegistered = false;
 GLWindowClassConstructor GLWindowTest::glWindowClassConstructor;
 
-static GLWindowTest* glWindow;
-
 GLWindowTest::GLWindowTest(const wchar_t* title, int _width, int _height)
 	:width(_width), height(_height), fullScreen(false),
 	active(false), running(false),
@@ -252,26 +250,3 @@ int GLWindowTest::getHeight()
 {
 	return height;
 }
-
-GLWindowTest* GLWindowCreate(const wchar_t* title, int width, int height)
-{
-	glWindow = new GLWindowTest(title, width, height);
-	return glWindow;
-}
-
-GLWindowTest* GLWindowCreate(const wchar_t* title, bool fullScreen)
-{
-	glWindow = new GLWindowTest(title, fullScreen);
-	return glWindow;
-}
-
-LRESULT CALLBACK GLWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-	if(glWindow)
-	switch (msg)
-	{	}
-
-	return DefWindowProc(hWnd, msg, wParam, lParam);
-}
-
-
