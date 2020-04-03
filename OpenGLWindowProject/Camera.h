@@ -10,6 +10,7 @@ class Camera : public SimpleObject3D
 	glm::vec3 m_targetPos;
 	glm::vec3 m_upVector;
 	glm::vec3 m_rightVector;
+
 	void updateModel();
 public:
 	void rotate(float angle, const glm::vec3 &r) override;

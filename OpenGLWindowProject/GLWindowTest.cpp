@@ -186,9 +186,6 @@ void GLWindowTest::setSize(int width, int height)
 	GetClientRect(g_hWnd, &rect);
 	width = rect.right - rect.left;
 	height = rect.bottom - rect.top;
-
-	// центрируем курсор относительно окна
-	//InputSetCursorPos(width / 2, height / 2);
 }
 
 void GLWindowTest::setFullScreen(bool _fullScreen)
@@ -211,7 +208,6 @@ bool GLWindowTest::isRunning()
 {
 	MSG    msg;
 
-	// обработаем сообщения из очереди сообщений
 	while (PeekMessage(&msg, g_hWnd, 0, 0, PM_REMOVE))
 	{
 		if (msg.message == WM_QUIT)

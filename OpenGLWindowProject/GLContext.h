@@ -1,20 +1,21 @@
 #pragma once
-#include "ShaderProgram.h"
 #include "Light.h"
 #include "Sphere.h"
 #include "Camera.h"
+#include "ShaderProgram.h"
 #include <glm/glm.hpp>
 
 class Mouse;
 class GLContextDescriptor;
-struct GLWindow;
+enum Light_t { Point, Spot, Directional, Count };
 
 class GLContext
 {
 	Mouse* m_mouse;
-	Light* m_light;
 	Camera m_camera;
-	ShaderProgram* m_program;
+	Light_t m_currLight;
+	Light* m_light[Light_t::Count];
+	ShaderProgram m_program[Light_t::Count];
 	glm::mat4 m_projectionMatrix;
 	GLContextDescriptor *glContextDescriptor;
 	std::vector<SimpleObject3D*> m_drawObjects;

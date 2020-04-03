@@ -37,19 +37,8 @@ void Sphere::draw(const ShaderProgram &program) const
     glm::mat3 normal = glm::transpose(glm::mat3(glm::inverse(m_model)));
     glUniformMatrix4fv(glGetUniformLocation(program, "transform.model"), 1, GL_FALSE, glm::value_ptr(m_model));
     glUniformMatrix3fv(glGetUniformLocation(program, "transform.normal"), 1, GL_FALSE, glm::value_ptr(normal));
-    OPENGL_CHECK_FOR_ERRORS();
-    /*
-    GLuint textureLocation;
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    textureLocation = glGetUniformLocation(program, "colorTexture");
-    if (textureLocation != -1)
-        glUniform1i(textureLocation, 0);
-        */
     material.set(program);
-    OPENGL_CHECK_FOR_ERRORS();
 
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -135,20 +124,6 @@ void Sphere::initIndexData(int stackCount, int sectorCount)
 
 void Sphere::initGLData(const ShaderProgram &program)
 {
-    /*
-    texture = TextureCreateFromTGA("E:\\OpenGLStuff\\Shaders\\LuxoftProject\\texture.tga");
-    GLuint textureLocation;
-    
-    program.use();
-    
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    
-    textureLocation = glGetUniformLocation(program, "colorTexture");
-    if (textureLocation != -1)
-         glUniform1i(textureLocation, 0);
-    */
-
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 

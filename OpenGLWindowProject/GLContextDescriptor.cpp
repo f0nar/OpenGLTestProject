@@ -88,7 +88,7 @@ bool GLContextDescriptor::isRunning()
 
 bool GLContextDescriptor::isActive()
 {
-	return glWindow->isActive();
+	return glWindow->isActive() && glWindow->isRunning();
 }
 
 int GLContextDescriptor::getWidth()

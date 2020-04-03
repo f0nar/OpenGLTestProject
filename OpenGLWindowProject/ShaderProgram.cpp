@@ -3,7 +3,17 @@
 #include <sstream>
 #include "Loger.h"
 
+ShaderProgram::ShaderProgram()
+    : compiled(false)
+{}
+
 ShaderProgram::ShaderProgram(const std::wstring& vpath, const std::wstring& fpath)
+    :ShaderProgram()
+{
+    load(vpath, fpath);
+}
+
+void ShaderProgram::load(const std::wstring& vpath, const std::wstring& fpath)
 {
     std::string vertexCode = loadCode(vpath);
     std::string fragmentCode = loadCode(fpath);
@@ -13,17 +23,20 @@ ShaderProgram::ShaderProgram(const std::wstring& vpath, const std::wstring& fpat
 
     m_program = createProgram(vertex, fragment);
 
+    compiled = true;
+
     glDeleteShader(vertex);
     glDeleteShader(fragment);
 }
 
 void ShaderProgram::use() const
 {
-    glUseProgram(m_program);
+    if(compiled) glUseProgram(m_program);
 }
 
 ShaderProgram::operator GLuint() const
 {
+    if(!compiled) LOG_ERROR("ERROR::PROGRAM::PROGRAM_NOT_COMPILED");
     return m_program;
 }
 
