@@ -14,6 +14,7 @@ public:
 	bool isActive();
 	int getWidth();
 	int getHeight();
+	HWND getWindowDescriptor();
 	HGLRC getRenderContext();
 	HDC getDisplayContext();
 	~GLContextDescriptor();

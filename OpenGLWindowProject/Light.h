@@ -10,37 +10,37 @@ protected:
 	glm::vec4 m_diffuse;
 	glm::vec4 m_specular;
 public:
-	Light(glm::vec4 position,
-		  glm::vec4 ambient  = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 
-		  glm::vec4 diffuse  = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 
-		  glm::vec4 specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	void setAmbient(glm::vec4 ambient);
-	void setDiffuse(glm::vec4 diffuse);
-	void setSpecular(glm::vec4 specular);
-	void setPosition(glm::vec4 position);
+	Light(const glm::vec4 &position,
+		const glm::vec4 &ambient  = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+		const glm::vec4 &diffuse  = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+		const glm::vec4 &specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	void setAmbient(const glm::vec4 &ambient);
+	void setDiffuse(const glm::vec4 &diffuse);
+	void setSpecular(const glm::vec4 &specular);
+	void setPosition(const glm::vec4 &position);
 	virtual void set(const ShaderProgram& program) const;
 	virtual ~Light() = 0;
 };
 
-inline Light::Light(glm::vec4 position, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular)
+inline Light::Light(const glm::vec4 &position, const glm::vec4 &ambient, const glm::vec4 &diffuse, const glm::vec4 &specular)
 	: m_position(position), m_ambient(ambient), m_diffuse(diffuse), m_specular(specular) {}
 
-inline void Light::setAmbient(glm::vec4 ambient)
+inline void Light::setAmbient(const glm::vec4 &ambient)
 {
 	m_ambient = ambient;
 }
 
-inline void Light::setDiffuse(glm::vec4 diffuse)
+inline void Light::setDiffuse(const glm::vec4 &diffuse)
 {
 	m_diffuse = diffuse;
 }
 
-inline void Light::setSpecular(glm::vec4 specular)
+inline void Light::setSpecular(const glm::vec4 &specular)
 {
 	m_specular = specular;
 }
 
-inline void Light::setPosition(glm::vec4 position)
+inline void Light::setPosition(const glm::vec4 &position)
 {
 	m_position = position;
 }

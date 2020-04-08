@@ -6,6 +6,8 @@
 #include "glm/gtx/transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+const float M_PI_F = static_cast<float>(M_PI);
+
 Sphere::Sphere(const ShaderProgram &program, const Material &material, float radius, int stackCount, int sectorCount)
     : material(material)
 {
@@ -17,42 +19,44 @@ Sphere::Sphere(const ShaderProgram &program, const Material &material, float rad
 void Sphere::rotate(float angle,const glm::vec3 &r)
 {
     m_rotate = glm::rotate(m_rotate, angle, r);
-    updateModel();
+    update();
 }
 
 void Sphere::translate(const glm::vec3 &t)
 {
     m_translate += t;
-    updateModel();
+    update();
 }
 
 void Sphere::scale(float s)
 {
     m_scale *= s;
-    updateModel();
+    update();
 }
 
 void Sphere::draw(const ShaderProgram &program) const
 {
-    glm::mat3 normal = glm::transpose(glm::mat3(glm::inverse(m_model)));
     glUniformMatrix4fv(glGetUniformLocation(program, "transform.model"), 1, GL_FALSE, glm::value_ptr(m_model));
-    glUniformMatrix3fv(glGetUniformLocation(program, "transform.normal"), 1, GL_FALSE, glm::value_ptr(normal));
+    glUniformMatrix3fv(glGetUniformLocation(program, "transform.normal"), 1, GL_FALSE, glm::value_ptr(m_normal));
 
     material.set(program);
 
     glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    GLsizei indicesCount = static_cast<GLsizei>(indices.size());
+    glDrawElements(GL_TRIANGLES, indicesCount , GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 
     OPENGL_CHECK_FOR_ERRORS();
 }
 
-void Sphere::updateModel()
+void Sphere::update()
 {
     m_model = glm::mat4(1.0f);
     m_model = glm::translate(m_model, m_translate);
     m_model = m_model * m_rotate;
     m_model = glm::scale(m_model, glm::vec3(m_scale));
+
+    m_normal = glm::transpose(glm::mat3(glm::inverse(m_model)));
 }
 
 glm::mat4 Sphere::getModel() const
@@ -68,13 +72,13 @@ void Sphere::initVertexData(float radius, int stackCount, int sectorCount)
     float nx, ny, nz, lengthInv = 1.0f / radius;
     float s, t;
 
-    float sectorStep = 2.0f * M_PI / sectorCount;
-    float stackStep = 1.0f * M_PI / stackCount;
+    float sectorStep = 2.0f * M_PI_F / sectorCount;
+    float stackStep  = 1.0f * M_PI_F / stackCount;
     float sectorAngle, stackAngle;
 
     for (int i = 0; i <= stackCount; ++i)
     {
-        stackAngle = M_PI / 2.0f - i * stackStep;
+        stackAngle = M_PI_F / 2.0f - i * stackStep;
         zx = radius * cosf(stackAngle);
         y = radius * sinf(stackAngle);
 
@@ -132,22 +136,22 @@ void Sphere::initGLData(const ShaderProgram &program)
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-    const int vertexCount = vertices.size() / 3,
-        dataStorageSize = vertexCount * 8;
+    const int vertexCount     = static_cast<int>(vertices.size() / 3);
+    const int dataStorageSize = vertexCount * 8;
     glBufferData(GL_ARRAY_BUFFER, dataStorageSize * sizeof(GLfloat), NULL, GL_STATIC_DRAW);
     GLfloat* mapBuffer = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
     if (mapBuffer) {
         for (int i = 0; i < vertexCount; ++i) {
-            int mpi = i * 8, vni = i * 3, tci = i * 2;
+            long int mpi = i * 8L, vni = i * 3L, tci = i * 2L;
             *(mapBuffer + mpi + 0) = vertices[vni];
-            *(mapBuffer + mpi + 1) = vertices[vni + 1];
-            *(mapBuffer + mpi + 2) = vertices[vni + 2];
-            *(mapBuffer + mpi + 3) = normals[vni];
-            *(mapBuffer + mpi + 4) = normals[vni + 1];
-            *(mapBuffer + mpi + 5) = normals[vni + 2];
+            *(mapBuffer + mpi + 1) = vertices[vni + 1LL];
+            *(mapBuffer + mpi + 2) = vertices[vni + 2LL];
+            *(mapBuffer + mpi + 3) = normals [vni];
+            *(mapBuffer + mpi + 4) = normals [vni + 1LL];
+            *(mapBuffer + mpi + 5) = normals [vni + 2LL];
             *(mapBuffer + mpi + 6) = texCoords[tci];
-            *(mapBuffer + mpi + 7) = texCoords[tci + 1];
+            *(mapBuffer + mpi + 7) = texCoords[tci + 1LL];
         }
         glUnmapBuffer(GL_ARRAY_BUFFER);
     }
@@ -155,15 +159,15 @@ void Sphere::initGLData(const ShaderProgram &program)
         std::vector<float> vertexData;
         vertexData.reserve(dataStorageSize);
         for (int i = 0; i < vertexCount; ++i) {
-            int vni = i * 3, tci = i * 2;
+            long int vni = i * 3L, tci = i * 2L;
             vertexData.push_back(vertices[vni]);
-            vertexData.push_back(vertices[vni + 1]);
-            vertexData.push_back(vertices[vni + 2]);
-            vertexData.push_back(normals[vni]);
-            vertexData.push_back(normals[vni + 1]);
-            vertexData.push_back(normals[vni + 2]);
+            vertexData.push_back(vertices[vni + 1LL]);
+            vertexData.push_back(vertices[vni + 2LL]);
+            vertexData.push_back(normals [vni]);
+            vertexData.push_back(normals [vni + 1LL]);
+            vertexData.push_back(normals [vni + 2LL]);
             vertexData.push_back(texCoords[tci]);
-            vertexData.push_back(texCoords[tci + 1]);
+            vertexData.push_back(texCoords[tci + 1LL]);
         }
         glBufferSubData(GL_ARRAY_BUFFER, 0, dataStorageSize * sizeof(GLfloat), vertexData.data());
     }

@@ -17,12 +17,12 @@ class Material
 	float	   m_shininess;
 
 public:
-	Material(glm::vec4  ambient,  glm::vec4  diffuse,
-			 glm::vec4  specular, glm::vec4  emission,
+	Material(const glm::vec4 &ambient,  const glm::vec4 &diffuse,
+			 const glm::vec4 &specular, const glm::vec4 &emission,
 			 float shininess);
 	Material(const ShaderProgram& program, std::string texturePath,
-			 glm::vec4  ambient,  glm::vec4  diffuse,
-			 glm::vec4  specular, glm::vec4  emission,
+		     const glm::vec4& ambient, const glm::vec4& diffuse,
+		     const glm::vec4& specular, const glm::vec4& emission,
 			 float shininess);
 
 	void set(const ShaderProgram& program) const;

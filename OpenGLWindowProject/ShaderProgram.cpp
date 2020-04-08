@@ -4,7 +4,7 @@
 #include "Loger.h"
 
 ShaderProgram::ShaderProgram()
-    : compiled(false)
+    : compiled(false), m_program(0)
 {}
 
 ShaderProgram::ShaderProgram(const std::wstring& vpath, const std::wstring& fpath)

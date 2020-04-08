@@ -2,20 +2,20 @@
 #include "OpenGL.h"
 #include <glm/gtc/type_ptr.hpp>
 
-PointLight::PointLight(glm::vec4 position, glm::vec3 attenuation, SimpleObject3D *body)
+PointLight::PointLight(const glm::vec4 &position, const glm::vec3 &attenuation, SimpleObject3D *body)
 	: Light(position),
 	  m_attenuation(attenuation), 
 	  m_body(body)
 {}
 
-PointLight::PointLight( glm::vec4 position, glm::vec4 ambient,
-						glm::vec4 diffuse,  glm::vec4 specular,
-						glm::vec3 attenuation, SimpleObject3D* body)
+PointLight::PointLight(const glm::vec4 &position, const glm::vec4 &ambient,
+					   const glm::vec4 &diffuse,  const glm::vec4 &specular,
+					   const glm::vec3 &attenuation, SimpleObject3D* body)
 	: Light(position, ambient, diffuse, specular), 
 	  m_attenuation(attenuation), m_body(body)
 {}
 
-void PointLight::setAttenuation(glm::vec3 attenuation)
+void PointLight::setAttenuation(const glm::vec3 &attenuation)
 {
 	m_attenuation = attenuation;
 }

@@ -11,6 +11,7 @@ class Sphere : public SimpleObject3D
 	GLuint ebo;
 	//GLuint texture;
 	Material material;
+	glm::mat3 m_normal;
 	std::vector<float> vertices;
 	std::vector<float> normals;
 	std::vector<float> texCoords;
@@ -18,7 +19,7 @@ class Sphere : public SimpleObject3D
 	void initVertexData(float radius, int stackCount, int sectorCount);
 	void initIndexData(int stackCount, int sectorCount);
 	void initGLData(const ShaderProgram &program);
-	void updateModel();
+	void update();
 	void addVertices(float x, float y, float z);
 	void addNormals(float x, float y, float z);
 	void addTexCoord(float x, float y);

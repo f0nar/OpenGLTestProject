@@ -4,8 +4,11 @@
 class DirectionalLight : public Light
 {
 public:
-	DirectionalLight(glm::vec4 position);
-	DirectionalLight(glm::vec4 position, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular);
+	DirectionalLight(const glm::vec4 &position);
+	DirectionalLight(const glm::vec4 &position, 
+					 const glm::vec4 &ambient, 
+					 const glm::vec4 &diffuse, 
+					 const glm::vec4 &specular);
 	void draw(const ShaderProgram& program) const override;
 	void rotate(float angle, const glm::vec3& v) override;
 	void translate(const glm::vec3& v) override;

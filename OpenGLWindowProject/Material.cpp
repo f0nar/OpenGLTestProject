@@ -3,8 +3,8 @@
 #include "Texture.h"
 #include <glm/gtc/type_ptr.hpp>
 
-Material::Material(glm::vec4  ambient,  glm::vec4  diffuse,
-				   glm::vec4  specular, glm::vec4  emission,
+Material::Material(const glm::vec4 &ambient,  const glm::vec4 &diffuse,
+				   const glm::vec4 &specular, const glm::vec4 &emission,
 				   float shininess)
 	: m_ambient(ambient),   m_diffuse(diffuse),
 	  m_specular(specular), m_emission(emission),
@@ -12,8 +12,8 @@ Material::Material(glm::vec4  ambient,  glm::vec4  diffuse,
 {}
 
 Material::Material(const ShaderProgram& program, std::string texturePath,
-				   glm::vec4  ambient,  glm::vec4  diffuse,
-				   glm::vec4  specular, glm::vec4  emission,
+				   const glm::vec4 &ambient,  const glm::vec4 &diffuse,
+				   const glm::vec4 &specular, const glm::vec4 &emission,
 				   float shininess)
 	: Material(ambient, diffuse, specular, emission, shininess)
 {

@@ -1,10 +1,10 @@
 #include "DirectionalLight.h"
 
-DirectionalLight::DirectionalLight(glm::vec4 position)
+DirectionalLight::DirectionalLight(const glm::vec4 &position)
 	:Light(position)
 {} 
 
-DirectionalLight::DirectionalLight(glm::vec4 position, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular)
+DirectionalLight::DirectionalLight(const glm::vec4 &position, const glm::vec4 &ambient, const glm::vec4 &diffuse, const glm::vec4 &specular)
 	: Light(position, ambient, diffuse, specular)
 {}
 

@@ -6,7 +6,7 @@
 
 void Camera::rotate(float angle, const glm::vec3 &r)
 {
-    const GLfloat senstive = 0.25f;
+    const GLfloat senstive = 0.05f;
 
     float xOffset = r.x * senstive;
     float yOffset = r.y * senstive;

@@ -101,6 +101,11 @@ int GLContextDescriptor::getHeight()
 	return glWindow->getHeight();
 }
 
+HWND GLContextDescriptor::getWindowDescriptor()
+{
+	return glWindow->getHWND();
+}
+
 HGLRC GLContextDescriptor::getRenderContext()
 {
 	return g_hRC;

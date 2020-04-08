@@ -2,6 +2,7 @@
 #include <math.h>
 #include "Mouse.h"
 #include "OpenGL.h"
+#include "Sphere.h"
 #include "GLContext.h"
 #include "SpotLight.h"
 #include "PointLight.h"
@@ -26,7 +27,8 @@ static glm::vec3 spotLightDirection(-1.0f, -2.0f, -15.0f);
 
 GLContext::GLContext(GLContextDescriptor *_glContextDescriptor) 
 	: glContextDescriptor(_glContextDescriptor),
-	  m_camera(cameraPos, cameraTarget, upVector)
+	  m_camera(cameraPos, cameraTarget, upVector),
+	  m_shooterMode(false)
 {
 	initialize();
 	ASSERT(glContextDescriptor);
@@ -56,8 +58,13 @@ void GLContext::initialize()
 
 	m_mouse = GetMouse();
 
+	if (m_shooterMode) {
+		setCursorToCenter();
+		m_mouse->setVisible(false);
+	}
+
 	//pointlight
-	m_program[Light_t::Point].load (vShaderPath[Light_t::Point], fShaderPath[Light_t::Point]);
+	m_program[Light_t::Point].load(vShaderPath[Light_t::Point], fShaderPath[Light_t::Point]);
 	Material lightPointMaterial(m_program[Light_t::Point], lightPointTexture,
 		glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f),
 		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 0.0f);
@@ -108,31 +115,39 @@ void GLContext::set()
 	glUniformMatrix4fv(glGetUniformLocation(m_program[m_currLight], "transform.projection"), 1, GL_FALSE, glm::value_ptr(m_projectionMatrix));
 }
 
+void GLContext::setCursorToCenter()
+{
+	int width = glContextDescriptor->getWidth() / 2;
+	int height = glContextDescriptor->getHeight() / 2;
+	m_mouse->setTo(width, height, glContextDescriptor->getWindowDescriptor());
+}
+
 void GLContext::update()
 {
 	if (!m_mouse) return;
 
-	static ScreenPoint prevPos = m_mouse->getCurrentPos();
-	if (m_mouse->isLButtonPressed()) {
+	
+	if (m_shooterMode || m_mouse->isLButtonPressed()) {
 
 		ScreenPoint currPos = m_mouse->getCurrentPos();
-		//ScreenPoint prevPos = m_mouse->getPrevPos();
+		ScreenPoint prevPos = m_mouse->getPrevPos();
 
 		glm::vec3 rotate = glm::vec3(-(currPos.x - prevPos.x), currPos.y - prevPos.y, 0.0f);
 		m_camera.rotate(0.0f, rotate);
-
-		prevPos = currPos;
 	}
 
 	if (m_mouse->isRButtonPressed())
 	{
 		switch (m_currLight)
 		{
-			case Light_t::Point: { m_currLight = Light_t::Spot; break; }
-			case Light_t::Spot:  { m_currLight = Light_t::Directional; break; }
+			case Light_t::Point:       { m_currLight = Light_t::Spot; break; }
+			case Light_t::Spot:        { m_currLight = Light_t::Directional; break; }
 			case Light_t::Directional: { m_currLight = Light_t::Point; break; }
 		}
-
+	}
+	if (m_shooterMode) {
+		setCursorToCenter();
+		m_mouse->setVisible(false);
 	}
 }
 

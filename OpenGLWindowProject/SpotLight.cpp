@@ -1,25 +1,27 @@
 #include "SpotLight.h"
 #include <glm/gtc/type_ptr.hpp>
 
-SpotLight::SpotLight(glm::vec4 position, glm::vec3 direction, glm::vec3 attenuation,
+SpotLight::SpotLight(const glm::vec4 &position, const glm::vec3 &direction, const glm::vec3 &attenuation,
 			float exponent, float cosCutoff)
 	: Light(position),
 	  m_direction(direction), m_attenuation(attenuation),
 	  m_exponent(exponent), m_cosCutoff(cosCutoff)
 {}
 
-SpotLight::SpotLight(glm::vec4 position, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular,
-					 glm::vec3 attenuation, glm::vec3 direction, float exponent, float cosCutoff)
+SpotLight::SpotLight(const glm::vec4 &position,    const glm::vec4 &ambient, 
+					 const glm::vec4 &diffuse,	   const glm::vec4 &specular,
+					 const glm::vec3 &attenuation, const glm::vec3 &direction, 
+					 float exponent, float cosCutoff)
 	: Light(position, ambient, diffuse, specular),
 	m_attenuation(attenuation), m_direction(direction), m_exponent(exponent), m_cosCutoff(cosCutoff)
 {}
 
-void SpotLight::setAttenuation(glm::vec3 attenuation)
+void SpotLight::setAttenuation(const glm::vec3 &attenuation)
 {
 	m_attenuation = attenuation;
 }
 
-void SpotLight::setDirection(glm::vec3 direction)
+void SpotLight::setDirection(const glm::vec3 &direction)
 {
 	m_direction = direction;
 }
