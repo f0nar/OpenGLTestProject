@@ -1,30 +1,18 @@
 #pragma once
 #include "OpenGL.h"
-#include "Simple3DObject.h"
-#include <vector>
+#include "Object3D.h"
 #include "Material.h"
 
-class Sphere : public SimpleObject3D
+class Sphere : public Object3D
 {
-	GLuint vbo;
-	GLuint vao;
-	GLuint ebo;
-	//GLuint texture;
-	Material material;
+	GLuint m_vbo;
+	GLuint m_vao;
+	GLuint m_ebo;
 	glm::mat3 m_normal;
-	std::vector<float> vertices;
-	std::vector<float> normals;
-	std::vector<float> texCoords;
-	std::vector<GLuint> indices;
 	void initVertexData(float radius, int stackCount, int sectorCount);
 	void initIndexData(int stackCount, int sectorCount);
-	void initGLData(const ShaderProgram &program);
+	void initGLData();
 	void update();
-	void addVertices(float x, float y, float z);
-	void addNormals(float x, float y, float z);
-	void addTexCoord(float x, float y);
-	void addIndices(unsigned int i1, unsigned int i2, unsigned int i3);
-	void deleteData();
 public:
 	Sphere(const Sphere&) = default;
 	Sphere(const ShaderProgram &program, const Material &material, float radius = 10.f, int stackCount = 25, int sectorCount = 50);

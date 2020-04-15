@@ -6,6 +6,7 @@
 #include "GLContext.h"
 #include "SpotLight.h"
 #include "PointLight.h"
+#include "AsteroidBelt.h"
 #include "DirectionalLight.h"
 #include "GLContextDescriptor.h"
 #include <glm/gtc/type_ptr.hpp>
@@ -15,6 +16,7 @@ static std::wstring vShaderPath[Light_t::Count] = { L"Shaders/pointLight.vs", L"
 static std::wstring fShaderPath[Light_t::Count] = { L"Shaders/pointLight.fs", L"Shaders/spotLight.fs", L"Shaders/directionalLight.fs" };
 
 static std::string sphereTexture = "Textures/texture.tga";
+static std::string planetTexture = "Textures/planet.tga";
 static std::string lightPointTexture = "Textures/blank.tga";
 
 static glm::vec3 cameraTarget(0.0f);
@@ -38,7 +40,7 @@ void GLContext::render()
 {
 	m_camera.draw(m_program[m_currLight]);
 
-	const int drawObjectCount = m_drawObjects.size();
+	const int drawObjectCount = static_cast<int>(m_drawObjects.size());
 	for (int i = 0; i < drawObjectCount; ++i)
 	{
 		m_drawObjects[i]->draw(m_program[m_currLight]);
@@ -65,7 +67,7 @@ void GLContext::initialize()
 
 	//pointlight
 	m_program[Light_t::Point].load(vShaderPath[Light_t::Point], fShaderPath[Light_t::Point]);
-	Material lightPointMaterial(m_program[Light_t::Point], lightPointTexture,
+	Material lightPointMaterial(lightPointTexture,
 		glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f),
 		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 0.0f);
 	Sphere* sphere = new Sphere(m_program[Light_t::Point], lightPointMaterial);
@@ -89,12 +91,17 @@ void GLContext::initialize()
 
 	m_currLight = Light_t::Spot;
 
-	Material sphereMaterial(m_program[m_currLight], sphereTexture,
+	/*
+	Material sphereMaterial(planetTexture,
 		glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), glm::vec4(0.8f, 1.0f, 1.0f, 1.0f),
 		glm::vec4(0.8f, 0.8f, 0.8f, 1.0f),glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 20.0f);
 	sphere = new Sphere(m_program[m_currLight], sphereMaterial);
 	sphere->scale(0.6);
 	m_drawObjects.push_back(sphere);
+	*/
+
+	AsteroidBelt* asteroid = new AsteroidBelt();
+	m_drawObjects.push_back(asteroid);
 
 	m_projectionMatrix = glm::perspective(45.0f, (float)glContextDescriptor->getWidth() / glContextDescriptor->getHeight(), 0.1f, 100.0f);
 
@@ -117,7 +124,7 @@ void GLContext::set()
 
 void GLContext::setCursorToCenter()
 {
-	int width = glContextDescriptor->getWidth() / 2;
+	int width  = glContextDescriptor->getWidth() / 2;
 	int height = glContextDescriptor->getHeight() / 2;
 	m_mouse->setTo(width, height, glContextDescriptor->getWindowDescriptor());
 }
@@ -160,4 +167,10 @@ void GLContext::mainLoop()
 		set();
 		render();
 	}
+}
+
+GLContext::~GLContext()
+{
+	for (int i = 0; i < m_drawObjects.size(); ++i)
+		delete m_drawObjects[i];
 }

@@ -1,4 +1,7 @@
 #pragma once
+#include <vector>
+#include <string>
+#include "Material.h"
 #include <glm/glm.hpp>
 #include "ShaderProgram.h"
 

@@ -30,5 +30,6 @@ class GLContext
 public:
 	GLContext(GLContextDescriptor *_glContextDescriptor);
 	void mainLoop();
+	~GLContext();
 };
 
