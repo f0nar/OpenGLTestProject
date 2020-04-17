@@ -9,35 +9,36 @@ static std::string asteroidObjPath = "C:/Users/Владислав/Downloads/rubik-s-cube-
 AsteroidBelt::AsteroidBelt(int amount, float radius, float offset)
 	: Object3D(asteroidObjPath)
 {
+    initModels(amount, radius, offset);
 	initGLData();
 }
 
 void AsteroidBelt::initModels(int amount, float radius, float offset)
 {
+    glm::mat4 mat(1.0f);
+    mat = glm::translate(mat, glm::vec3(5.0f, 5.0f, 0.0f));
+    
     for (int i = 0; i < amount; ++i)
     {
         glm::mat4 model = glm::mat4(1.0f);
-        // 1. translation: displace along circle with 'radius' in range [-offset, offset]
         float angle = (float)i / (float)amount * 360.0f;
         float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
         float x = sin(angle) * radius + displacement;
         displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-        float y = displacement * 0.4f; // keep height of asteroid field smaller compared to width of x and z
+        float y = displacement * 0.4f;
         displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
         float z = cos(angle) * radius + displacement;
         model = glm::translate(model, glm::vec3(x, y, z));
 
-        // 2. scale: Scale between 0.05 and 0.25f
-        float scale = (rand() % 20) / 100.0f + 0.05;
+        float scale = (rand() % 20) / 100.0f + 0.05f;
         model = glm::scale(model, glm::vec3(scale));
 
-        // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
         float rotAngle = (rand() % 360);
         model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
 
-        // 4. now add to list of matrices
         m_models.push_back(model);
     }
+    
 }
 
 void AsteroidBelt::initGLData()
@@ -50,7 +51,8 @@ void AsteroidBelt::initGLData()
 
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
-    const int dataStorageSize = m_vertexData.size() * sizeof(Vertex);
+    const int vertexCount = static_cast<const int>(m_vertexData.size());
+    const int dataStorageSize = vertexCount * sizeof(Vertex);
     glBufferData(GL_ARRAY_BUFFER, dataStorageSize, NULL, GL_STATIC_DRAW);
     GLfloat* mapBuffer = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
@@ -67,14 +69,14 @@ void AsteroidBelt::initGLData()
 
 
     int stride = sizeof(Vertex);
-    int offset = 0;
+    __int64 offset = 0;
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
     glEnableVertexAttribArray(0);
     offset += sizeof(glm::vec3);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(offset));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)offset);
     glEnableVertexAttribArray(1);
     offset += sizeof(glm::vec3);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(offset));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)offset);
     glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
@@ -90,8 +92,6 @@ void AsteroidBelt::update()
 	m_model = glm::translate(m_model, m_translate);
 	m_model = m_model * m_rotate;
 	m_model = glm::scale(m_model, glm::vec3(m_scale));
-
-	m_normal = glm::transpose(glm::mat3(glm::inverse(m_model)));
 }
 
 void AsteroidBelt::deleteData()
@@ -119,14 +119,16 @@ void AsteroidBelt::scale(float scale)
 
 void AsteroidBelt::draw(const ShaderProgram& program) const
 {
-    glUniformMatrix4fv(glGetUniformLocation(program, "transform.model"), 1, GL_FALSE, glm::value_ptr(m_model));
-    glUniformMatrix3fv(glGetUniformLocation(program, "transform.normal"), 1, GL_FALSE, glm::value_ptr(m_normal));
+    GLsizei modelCount = static_cast<GLsizei>(m_models.size());
+
+    glUniformMatrix4fv(glGetUniformLocation(program, "transform.model"), modelCount, GL_FALSE, (float *)m_models.data());
+    glUniformMatrix4fv(glGetUniformLocation(program, "transform.globalModel"), 1, GL_FALSE, glm::value_ptr(m_model));
 
     m_material.set(program);
 
     glBindVertexArray(m_vao);
     GLsizei indicesCount = static_cast<GLsizei>(m_indices.size());
-    glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
+    glDrawElementsInstanced(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0, modelCount);
     glBindVertexArray(0);
 
     OPENGL_CHECK_FOR_ERRORS();

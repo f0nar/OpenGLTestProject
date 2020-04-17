@@ -10,14 +10,13 @@ class AsteroidBelt : public Object3D
 	GLuint m_vao;
 	GLuint m_vbo;
 	GLuint m_ebo;
-	glm::mat3 m_normal;
 	std::vector<glm::mat4> m_models;
 	void initGLData();
 	void initModels(int amount, float radius, float offset);
 	void update();
 	void deleteData();
 public:
-	AsteroidBelt(int amount = 100, float radius = 50.0f, float offset = 10.0f);
+	AsteroidBelt(int amount = 100, float radius = 20.0f, float offset = 5.0f);
 	void rotate(float angle, const glm::vec3 & v) override;
 	void translate(const glm::vec3 & v) override;
 	void scale(float) override;

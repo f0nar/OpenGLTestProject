@@ -84,11 +84,14 @@ bool OpenGLInitExtensions()
 
 	OPENGL_GET_PROC(PFNGLACTIVETEXTUREPROC, glActiveTexture);
 
+	OPENGL_GET_PROC(PFNGLDRAWELEMENTSINSTANCEDPROC, glDrawElementsInstanced);
+
 	OPENGL_CHECK_FOR_ERRORS();
 
 	return true;
 }
 // объявим расширения OpenGL
+PFNGLDRAWELEMENTSINSTANCEDPROC glDrawElementsInstanced = NULL;
 // VAO
 PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays = NULL;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = NULL;

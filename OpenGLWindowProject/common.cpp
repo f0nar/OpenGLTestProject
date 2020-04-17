@@ -1,6 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include "common.h"
 
+
+const float M_PI_F = static_cast<float>(M_PI);
 
 bool LoadFile(const char* fileName, bool binary, uint8_t** buffer, uint32_t* size)
 {

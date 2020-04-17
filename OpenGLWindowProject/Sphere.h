@@ -8,14 +8,13 @@ class Sphere : public Object3D
 	GLuint m_vbo;
 	GLuint m_vao;
 	GLuint m_ebo;
-	glm::mat3 m_normal;
 	void initVertexData(float radius, int stackCount, int sectorCount);
 	void initIndexData(int stackCount, int sectorCount);
 	void initGLData();
 	void update();
 public:
 	Sphere(const Sphere&) = default;
-	Sphere(const ShaderProgram &program, const Material &material, float radius = 10.f, int stackCount = 25, int sectorCount = 50);
+	Sphere(const ShaderProgram &program, const Material &material, float radius = 10.0f, int stackCount = 25, int sectorCount = 50);
 	void rotate(float angle, const glm::vec3 &v) override;
 	void translate(const glm::vec3 &v) override;
 	void scale(float) override;

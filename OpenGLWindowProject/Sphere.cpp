@@ -6,8 +6,6 @@
 #include "glm/gtx/transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-const float M_PI_F = static_cast<float>(M_PI);
-
 Sphere::Sphere(const ShaderProgram &program, const Material &material, float radius, int stackCount, int sectorCount)
 {
     m_material = material;
@@ -37,7 +35,7 @@ void Sphere::scale(float s)
 void Sphere::draw(const ShaderProgram &program) const
 {
     glUniformMatrix4fv(glGetUniformLocation(program, "transform.model"), 1, GL_FALSE, glm::value_ptr(m_model));
-    glUniformMatrix3fv(glGetUniformLocation(program, "transform.normal"), 1, GL_FALSE, glm::value_ptr(m_normal));
+    glUniformMatrix4fv(glGetUniformLocation(program, "transform.globalModel"), 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
 
     m_material.set(program);
 
@@ -55,8 +53,6 @@ void Sphere::update()
     m_model = glm::translate(m_model, m_translate);
     m_model = m_model * m_rotate;
     m_model = glm::scale(m_model, glm::vec3(m_scale));
-
-    m_normal = glm::transpose(glm::mat3(glm::inverse(m_model)));
 }
 
 glm::mat4 Sphere::getModel() const

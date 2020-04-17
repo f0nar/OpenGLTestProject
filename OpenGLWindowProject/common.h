@@ -26,4 +26,6 @@ typedef unsigned __int32 uint32_t;
 
 bool LoadFile(const char* fileName, bool binary, uint8_t** buffer, uint32_t* size);
 
+extern const float M_PI_F;
+
 #endif /* COMMON_H */

@@ -12,16 +12,18 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-static std::wstring vShaderPath[Light_t::Count] = { L"Shaders/pointLight.vs", L"Shaders/spotLight.vs", L"Shaders/directionalLight.vs" };
-static std::wstring fShaderPath[Light_t::Count] = { L"Shaders/pointLight.fs", L"Shaders/spotLight.fs", L"Shaders/directionalLight.fs" };
+static std::wstring vShaderPath[Light_t::Count] = { L"Shaders/Instanced/pointLight.vs", L"Shaders/Instanced/spotLight.vs", L"Shaders/Instanced/directionalLight.vs" };
+static std::wstring fShaderPath[Light_t::Count] = { L"Shaders/Instanced/pointLight.fs", L"Shaders/Instanced/spotLight.fs", L"Shaders/Instanced/directionalLight.fs" };
 
 static std::string sphereTexture = "Textures/texture.tga";
 static std::string planetTexture = "Textures/planet.tga";
 static std::string lightPointTexture = "Textures/blank.tga";
 
 static glm::vec3 cameraTarget(0.0f);
-static glm::vec3 cameraPos(0.0f, 0.0f, 30.0f);
-static glm::vec3 upVector(0.0f, 1.0f, 0.0f);
+static glm::vec3 cameraPos(0.0, 0.0, 30.0);// (30.0f, 30.0f, 30.0f);
+static glm::vec3 upGlobalVector(0.0f, 1.0f, 0.0f);
+static glm::vec3 rightLocalVector = -glm::cross(cameraPos ,upGlobalVector );
+static glm::vec3 upLocalVector = -glm::cross(rightLocalVector, cameraPos );
 
 static glm::vec4 pointLightPos(-5.0f, 5.0f, 10.0f, 1.0f);
 static glm::vec4 spotLightPos(0.0f, 0.0f, 10.0f, 1.0f);
@@ -29,7 +31,7 @@ static glm::vec3 spotLightDirection(-1.0f, -2.0f, -15.0f);
 
 GLContext::GLContext(GLContextDescriptor *_glContextDescriptor) 
 	: glContextDescriptor(_glContextDescriptor),
-	  m_camera(cameraPos, cameraTarget, upVector),
+	  m_camera(cameraPos, cameraTarget, upGlobalVector),
 	  m_shooterMode(false)
 {
 	initialize();
@@ -85,20 +87,18 @@ void GLContext::initialize()
 	
 	//spotLight
 	m_program[Light_t::Spot].load(vShaderPath[Light_t::Spot], fShaderPath[Light_t::Spot]);
-	SpotLight* spotLight = new SpotLight(spotLightPos, spotLightDirection, glm::vec3(0.5f, 0.0f, 0.02f), 5.0f, cosf(45.0f * (M_PI / 180.0f)));
+	SpotLight* spotLight = new SpotLight(spotLightPos, spotLightDirection, glm::vec3(0.5f, 0.0f, 0.02f), 5.0f, cosf(45.0f * (M_PI_F / 180.0f)));
 	spotLight->setAmbient(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 	m_light[Light_t::Spot] = spotLight;
 
-	m_currLight = Light_t::Spot;
+	m_currLight = Light_t::Directional;
 
-	/*
 	Material sphereMaterial(planetTexture,
 		glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), glm::vec4(0.8f, 1.0f, 1.0f, 1.0f),
-		glm::vec4(0.8f, 0.8f, 0.8f, 1.0f),glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 20.0f);
+		glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 20.0f);
 	sphere = new Sphere(m_program[m_currLight], sphereMaterial);
-	sphere->scale(0.6);
+	sphere->scale(0.6f);
 	m_drawObjects.push_back(sphere);
-	*/
 
 	AsteroidBelt* asteroid = new AsteroidBelt();
 	m_drawObjects.push_back(asteroid);

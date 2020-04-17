@@ -37,6 +37,7 @@ GLint ShaderProgramStatus(GLuint program, GLenum param);
 GLint ShaderStatus(GLuint shader, GLenum param);
 
 // расширения OpenGL
+extern PFNGLDRAWELEMENTSINSTANCEDPROC glDrawElementsInstanced;
 // VAO
 extern PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays;
 extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;

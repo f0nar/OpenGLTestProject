@@ -1,10 +1,12 @@
-#version 330 core
+#version 410 core
+
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 texcoord;
+
 uniform struct Transform
 {
-	mat4 model;
+	mat4 model[100];
 	mat4 view;
 	mat4 projection;
 	mat3 normal;
@@ -29,11 +31,12 @@ out Vertex{
 
 void main(void)
 {
-	vec4 vert = transform.model * vec4(position, 1.0);
+	vec4 vert = transform.model[gl_InstanceID] * vec4(position, 1.0);
+	mat3 normalM = transpose(inverse(mat3(transform.model[gl_InstanceID])));
 	vec4 lightDir = light.position - vert;
 
 	vertex.texcoord = texcoord;
-	vertex.normal = transform.normal * normal;
+	vertex.normal = normalM * normal;//transform.normal * normal;
 	vertex.lightDir = vec3(lightDir);
 	vertex.viewDir = transform.viewPos - vec3(vert);
 	vertex.distance = length(lightDir);
