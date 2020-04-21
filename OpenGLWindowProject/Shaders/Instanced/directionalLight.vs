@@ -6,7 +6,7 @@ layout(location = 1) in vec3 normal;
 // параметры преобразований
 uniform struct Transform
 {
-	mat4 model[100];
+	samplerBuffer model_tbo;
 	mat4 view;
 	mat4 projection;
 	mat4 globalModel;
@@ -31,7 +31,12 @@ out Vertex
 
 void main(void)
 {
-	mat4 model = transform.model[gl_InstanceID] * transform.globalModel; //transform.globalModel * transform.model[gl_InstanceID];
+	vec4 col1 = texelFetch(transform.model_tbo, gl_InstanceID * 4);
+    vec4 col2 = texelFetch(transform.model_tbo, gl_InstanceID * 4 + 1);
+    vec4 col3 = texelFetch(transform.model_tbo, gl_InstanceID * 4 + 2);
+    vec4 col4 = texelFetch(transform.model_tbo, gl_InstanceID * 4 + 3);
+
+	mat4 model = transform.globalModel * mat4(col1, col2, col3, col4); //transform.globalModel * transform.model[gl_InstanceID];
 	vec4 vert = model * vec4(position, 1.0);
 	mat3 normalM = transpose(inverse(mat3(model)));
 

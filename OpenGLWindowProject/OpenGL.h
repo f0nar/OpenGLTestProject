@@ -80,7 +80,7 @@ extern PFNGLUNIFORM4FVPROC		   glUniform4fv;
 extern PFNGLUNIFORM1FVPROC		   glUniform1fv;
 extern PFNGLUNIFORM3FVPROC		   glUniform3fv;
 
-
+extern PFNGLTEXBUFFERPROC	  glTexBuffer;
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 
 #endif /* OPENGL_H */
