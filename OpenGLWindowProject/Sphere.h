@@ -7,6 +7,7 @@ class Sphere : public Object3D
 {
 	GLuint m_vbo;
 	GLuint m_vao;
+	GLuint m_mbo;
 	GLuint m_ebo;
 	void initVertexData(float radius, int stackCount, int sectorCount);
 	void initIndexData(int stackCount, int sectorCount);

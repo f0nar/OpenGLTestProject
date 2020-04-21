@@ -2,15 +2,16 @@
 
 layout(location = 0) in vec3 position;
 layout(location = 2) in vec2 texcoord;
-layout(location = 1)   in vec3 normal;
+layout(location = 1) in vec3 normal;
+
+layout(location = 3) in mat4 model;
 
 // параметры преобразований
 uniform struct Transform
 {
-	mat4 model[100];
 	mat4 view;
 	mat4 projection;
-	mat3 normal;
+	mat4 globalModel;
 	vec3 viewPos;
 } transform;
 
@@ -39,10 +40,10 @@ out Vertex
 
 void main(void)
 {
-	// переведем координаты вершины в мировую систему координат
-	vec4 vert   = transform.model[gl_InstanceID] * vec4(position, 1.0);
-	mat3 normalM = transpose(inverse(mat3(transform.model[gl_InstanceID])));
-	// направление от вершины на источник освещения в мировой системе координат
+	mat4 modelM = model * transform.globalModel; //transform.globalModel * transform.model[gl_InstanceID];
+	vec4 vert = modelM * vec4(position, 1.0);
+	mat3 normalM = transpose(inverse(mat3(modelM)));
+
 	vec4 lightDir = light.position - vert;
 
 	// передадим в фрагментный шейдер некоторые параметры

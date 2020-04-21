@@ -9,6 +9,7 @@ class AsteroidBelt : public Object3D
 {
 	GLuint m_vao;
 	GLuint m_vbo;
+	GLuint m_mbo;
 	GLuint m_ebo;
 	std::vector<glm::mat4> m_models;
 	void initGLData();

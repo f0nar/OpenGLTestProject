@@ -69,6 +69,7 @@ extern PFNGLGETSHADERINFOLOGPROC  glGetShaderInfoLog;
 // Shaders attributes
 extern PFNGLGETATTRIBLOCATIONPROC        glGetAttribLocation;
 extern PFNGLVERTEXATTRIBPOINTERPROC      glVertexAttribPointer;
+extern PFNGLVERTEXATTRIBDIVISORPROC      glVertexAttribDivisor;
 extern PFNGLENABLEVERTEXATTRIBARRAYPROC  glEnableVertexAttribArray;
 extern PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray;
 // Shaders uniforms

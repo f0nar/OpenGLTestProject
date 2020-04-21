@@ -3,10 +3,11 @@ layout(location = 0) in vec3 position;
 layout(location = 2) in vec2 texcoord;
 layout(location = 1) in vec3 normal;
 
+layout(location = 3) in mat4 model;
+
 // параметры преобразований
 uniform struct Transform
 {
-	mat4 model[100];
 	mat4 view;
 	mat4 projection;
 	mat4 globalModel;
@@ -31,9 +32,9 @@ out Vertex
 
 void main(void)
 {
-	mat4 model = transform.model[gl_InstanceID] * transform.globalModel; //transform.globalModel * transform.model[gl_InstanceID];
-	vec4 vert = model * vec4(position, 1.0);
-	mat3 normalM = transpose(inverse(mat3(model)));
+	mat4 modelM = model * transform.globalModel; //transform.globalModel * transform.model[gl_InstanceID];
+	vec4 vert = modelM * vec4(position, 1.0);
+	mat3 normalM = transpose(inverse(mat3(modelM)));
 
 	// передадим в фрагментный шейдер некоторые параметры
 	// передаем текстурные координаты
