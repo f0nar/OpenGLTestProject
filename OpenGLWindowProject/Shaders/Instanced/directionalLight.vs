@@ -8,6 +8,7 @@ layout(location = 3) in mat4 model;
 // параметры преобразований
 uniform struct Transform
 {
+	samplerBuffer model_tbo;
 	mat4 view;
 	mat4 projection;
 	mat4 globalModel;
@@ -32,9 +33,15 @@ out Vertex
 
 void main(void)
 {
-	mat4 modelM = model * transform.globalModel; //transform.globalModel * transform.model[gl_InstanceID];
-	vec4 vert = modelM * vec4(position, 1.0);
-	mat3 normalM = transpose(inverse(mat3(modelM)));
+
+	vec4 col1 = texelFetch(transform.model_tbo, gl_InstanceID * 4);
+    vec4 col2 = texelFetch(transform.model_tbo, gl_InstanceID * 4 + 1);
+    vec4 col3 = texelFetch(transform.model_tbo, gl_InstanceID * 4 + 2);
+    vec4 col4 = texelFetch(transform.model_tbo, gl_InstanceID * 4 + 3);
+
+	mat4 model = transform.globalModel * mat4(col1, col2, col3, col4); //transform.globalModel * transform.model[gl_InstanceID];
+	vec4 vert = model * vec4(position, 1.0);
+	mat3 normalM = transpose(inverse(mat3(model)));
 
 	// передадим в фрагментный шейдер некоторые параметры
 	// передаем текстурные координаты

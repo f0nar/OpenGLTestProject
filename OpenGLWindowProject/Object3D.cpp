@@ -83,7 +83,7 @@ void Object3D::load(const std::string& path)
 
 void Object3D::addVertex(const glm::vec3& vert, const glm::vec3& norm, const glm::vec2& tex)
 {
-	m_vertexData.emplace_back(vert, norm, tex);
+	m_vertexData.emplace_back(vert, norm, tex); //
 }
 
 void Object3D::addIndices(GLuint i1, GLuint i2, GLuint i3)

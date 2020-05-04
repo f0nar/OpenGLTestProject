@@ -34,7 +34,10 @@ void Sphere::scale(float s)
 
 void Sphere::draw(const ShaderProgram &program) const
 {
-    //glUniformMatrix4fv(glGetUniformLocation(program, "transform.model"), 1, GL_FALSE, glm::value_ptr(m_model));
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_BUFFER, m_textureBuffer);
+
+    glUniform1i(glGetUniformLocation(program, "transform.model_tbo"), 1);
     glUniformMatrix4fv(glGetUniformLocation(program, "transform.globalModel"), 1, GL_FALSE, glm::value_ptr(m_model));
 
     m_material.set(program);
@@ -132,6 +135,7 @@ void Sphere::initGLData()
     glGenBuffers(1, &m_vbo);
     glGenBuffers(1, &m_ebo);
     glGenBuffers(1, &m_mbo);
+    glGenBuffers(1, &m_tbo);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
@@ -146,6 +150,17 @@ void Sphere::initGLData()
     else {
         glBufferSubData(GL_ARRAY_BUFFER, 0, dataStorageSize * sizeof(GLfloat), m_vertexData.data());
     }
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(GLuint), m_indices.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_TEXTURE_BUFFER, m_tbo);
+    glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::mat4), glm::value_ptr(glm::mat4(1.0f)), GL_STATIC_DRAW);
+
+    glGenTextures(1, &m_textureBuffer);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_BUFFER, m_textureBuffer);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_tbo);
 
     int stride = sizeof(Vertex), offset = 0;
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);

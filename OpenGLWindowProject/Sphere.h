@@ -1,7 +1,6 @@
 #pragma once
 #include "OpenGL.h"
 #include "Object3D.h"
-#include "Material.h"
 
 class Sphere : public Object3D
 {
@@ -9,6 +8,8 @@ class Sphere : public Object3D
 	GLuint m_vao;
 	GLuint m_mbo;
 	GLuint m_ebo;
+	GLuint m_tbo;
+	GLuint m_textureBuffer;
 	void initVertexData(float radius, int stackCount, int sectorCount);
 	void initIndexData(int stackCount, int sectorCount);
 	void initGLData();

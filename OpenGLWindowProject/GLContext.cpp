@@ -20,10 +20,8 @@ static std::string planetTexture = "Textures/planet.tga";
 static std::string lightPointTexture = "Textures/blank.tga";
 
 static glm::vec3 cameraTarget(0.0f);
-static glm::vec3 cameraPos(0.0, 0.0, 30.0);// (30.0f, 30.0f, 30.0f);
+static glm::vec3 cameraPos(0.0, 0.0, 30.0);
 static glm::vec3 upGlobalVector(0.0f, 1.0f, 0.0f);
-static glm::vec3 rightLocalVector = -glm::cross(cameraPos ,upGlobalVector );
-static glm::vec3 upLocalVector = -glm::cross(rightLocalVector, cameraPos );
 
 static glm::vec4 pointLightPos(-5.0f, 5.0f, 10.0f, 1.0f);
 static glm::vec4 spotLightPos(0.0f, 0.0f, 10.0f, 1.0f);
