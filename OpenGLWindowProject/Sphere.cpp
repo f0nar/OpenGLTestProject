@@ -173,22 +173,6 @@ void Sphere::initGLData()
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(GLuint), m_indices.data(), GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, m_mbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4), glm::value_ptr(glm::mat4(1.0f)), GL_STATIC_DRAW);
-
-    offset = 0;
-    stride = sizeof(glm::mat4);
-    int modelLocation = 3;
-    for (int i = 0; i < 4; ++i, offset += sizeof(glm::vec4))
-    {
-        glVertexAttribPointer(modelLocation + i, 4, GL_FLOAT, GL_FALSE, stride, (void*)offset);
-        glEnableVertexAttribArray(modelLocation + i);
-        glVertexAttribDivisor(modelLocation + i, 1);
-    }
-
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

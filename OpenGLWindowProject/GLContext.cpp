@@ -77,14 +77,14 @@ void GLContext::initialize()
 	m_tesProg.attach(L"Shaders/Tesselation/smartSphere.tes", GL_TESS_EVALUATION_SHADER);
 	m_tesProg.link();
 
-	//pointlight
+	//point light
 	m_program[Light_t::Point].attach(vShaderPath[Light_t::Point], GL_VERTEX_SHADER);
 	m_program[Light_t::Point].attach(fShaderPath[Light_t::Point], GL_FRAGMENT_SHADER);
 	m_program[Light_t::Point].link();
 	Material lightPointMaterial(lightPointTexture,
 		glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f),
 		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 0.0f);
-	//point Light body
+	//point light body
 	Sphere* sphere = new Sphere(m_program[Light_t::Point], lightPointMaterial);
 	sphere->translate(pointLightPos);
 	sphere->scale(0.1f);
@@ -115,7 +115,8 @@ void GLContext::initialize()
 		glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), glm::vec4(0.8f, 1.0f, 1.0f, 1.0f),
 		glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 20.0f);
 	sphere = new Sphere(m_program[m_currLight], sphereMaterial);
-	sphere->scale(0.6f);
+	sphere->scale(0.3f);
+	sphere->translate(glm::vec3(0.0f, 12.0f, 7.0f));
 	m_drawObjects.push_back(sphere);
 
 	//Tessellated sphere
