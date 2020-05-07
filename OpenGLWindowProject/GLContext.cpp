@@ -38,13 +38,19 @@ GLContext::GLContext(GLContextDescriptor *_glContextDescriptor)
 
 void GLContext::render()
 {
+	set(m_program[m_currLight]);
 	m_camera.draw(m_program[m_currLight]);
 
+	m_camera.draw(m_tesProg);
 	const int drawObjectCount = static_cast<int>(m_drawObjects.size());
 	for (int i = 0; i < drawObjectCount; ++i)
 	{
 		m_drawObjects[i]->draw(m_program[m_currLight]);
 	}
+
+	set(m_tesProg);
+	m_camera.draw(m_tesProg);
+	m_smrtSphere->draw(m_tesProg);
 
 	SwapBuffers(glContextDescriptor->getDisplayContext());
 	OPENGL_CHECK_FOR_ERRORS();
@@ -65,11 +71,20 @@ void GLContext::initialize()
 		m_mouse->setVisible(false);
 	}
 
+	m_tesProg.attach(L"Shaders/Tesselation/smartSphere.vs", GL_VERTEX_SHADER);
+	m_tesProg.attach(L"Shaders/Tesselation/smartSphere.fs", GL_FRAGMENT_SHADER);
+	m_tesProg.attach(L"Shaders/Tesselation/smartSphere.tcs", GL_TESS_CONTROL_SHADER);
+	m_tesProg.attach(L"Shaders/Tesselation/smartSphere.tes", GL_TESS_EVALUATION_SHADER);
+	m_tesProg.link();
+
 	//pointlight
-	m_program[Light_t::Point].load(vShaderPath[Light_t::Point], fShaderPath[Light_t::Point]);
+	m_program[Light_t::Point].attach(vShaderPath[Light_t::Point], GL_VERTEX_SHADER);
+	m_program[Light_t::Point].attach(fShaderPath[Light_t::Point], GL_FRAGMENT_SHADER);
+	m_program[Light_t::Point].link();
 	Material lightPointMaterial(lightPointTexture,
 		glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f),
 		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 0.0f);
+	//point Light body
 	Sphere* sphere = new Sphere(m_program[Light_t::Point], lightPointMaterial);
 	sphere->translate(pointLightPos);
 	sphere->scale(0.1f);
@@ -77,20 +92,25 @@ void GLContext::initialize()
 	pointLight->setAmbient(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 	m_light[Light_t::Point] = pointLight;
 
-
 	//directional light
-	m_program[Light_t::Directional].load(vShaderPath[Light_t::Directional], fShaderPath[Light_t::Directional]);
+	m_program[Light_t::Directional].attach(vShaderPath[Light_t::Directional], GL_VERTEX_SHADER);
+	m_program[Light_t::Directional].attach(fShaderPath[Light_t::Directional], GL_FRAGMENT_SHADER);
+	m_program[Light_t::Directional].link();
 	glm::vec4 directionalLightPos = pointLightPos; directionalLightPos.w = 0;
 	m_light[Light_t::Directional] = new DirectionalLight(directionalLightPos);
-	
-	//spotLight
-	m_program[Light_t::Spot].load(vShaderPath[Light_t::Spot], fShaderPath[Light_t::Spot]);
+
+	//spot light
+	m_program[Light_t::Spot].attach(vShaderPath[Light_t::Spot], GL_VERTEX_SHADER);
+	m_program[Light_t::Spot].attach(fShaderPath[Light_t::Spot], GL_FRAGMENT_SHADER);
+	m_program[Light_t::Spot].link();
 	SpotLight* spotLight = new SpotLight(spotLightPos, spotLightDirection, glm::vec3(0.5f, 0.0f, 0.02f), 5.0f, cosf(45.0f * (M_PI_F / 180.0f)));
 	spotLight->setAmbient(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 	m_light[Light_t::Spot] = spotLight;
 
 	m_currLight = Light_t::Directional;
 
+
+	//Main sphere
 	Material sphereMaterial(planetTexture,
 		glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), glm::vec4(0.8f, 1.0f, 1.0f, 1.0f),
 		glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 20.0f);
@@ -98,6 +118,10 @@ void GLContext::initialize()
 	sphere->scale(0.6f);
 	m_drawObjects.push_back(sphere);
 
+	//Tessellated sphere
+	m_smrtSphere = new SmartSphere(glm::vec3(0.0), 10.0f, sphereMaterial);
+
+	//Asteroid belt
 	AsteroidBelt* asteroid = new AsteroidBelt();
 	m_drawObjects.push_back(asteroid);
 
@@ -112,12 +136,12 @@ void GLContext::clear()
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-void GLContext::set()
+void GLContext::set(const ShaderProgram& program)
 {
-	m_program[m_currLight].use();
-	m_light[m_currLight]->set(m_program[m_currLight]);
+	program.use();
+	m_light[m_currLight]->set(program);
 
-	glUniformMatrix4fv(glGetUniformLocation(m_program[m_currLight], "transform.projection"), 1, GL_FALSE, glm::value_ptr(m_projectionMatrix));
+	glUniformMatrix4fv(glGetUniformLocation(program, "transform.projection"), 1, GL_FALSE, glm::value_ptr(m_projectionMatrix));
 }
 
 void GLContext::setCursorToCenter()
@@ -162,7 +186,6 @@ void GLContext::mainLoop()
 	{
 		clear();
 		update();
-		set();
 		render();
 	}
 }

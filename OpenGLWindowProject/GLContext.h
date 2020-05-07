@@ -1,5 +1,6 @@
 #pragma once
 #include "Camera.h"
+#include "SmartSphere.h"
 #include "ShaderProgram.h"
 #include <glm/glm.hpp>
 #include <vector>
@@ -17,6 +18,8 @@ class GLContext
 	Light_t m_currLight;
 	Light* m_light[Light_t::Count];
 	ShaderProgram m_program[Light_t::Count];
+	ShaderProgram m_tesProg;
+	SmartSphere *m_smrtSphere;
 	glm::mat4 m_projectionMatrix;
 	GLContextDescriptor *glContextDescriptor;
 	std::vector<SimpleObject3D*> m_drawObjects;
@@ -26,7 +29,7 @@ class GLContext
 	void initialize();
 	void update();
 	void clear();
-	void set();
+	void set(const ShaderProgram &program);
 public:
 	GLContext(GLContextDescriptor *_glContextDescriptor);
 	void mainLoop();

@@ -1,0 +1,39 @@
+#version 410 core
+
+uniform struct Transform
+{
+	mat4 model;
+	mat4 view;
+	mat4 projection;
+	mat3 normal;
+	vec3 viewPos;
+} transform;
+
+in SphereData
+{
+    vec3 center;
+    float radius;
+} sphereData[];
+
+layout(vertices = 1) out;
+
+void main(void)
+{
+    vec4 sphPos = gl_out[gl_InvocationID].gl_Position = gl_in[0].gl_Position;
+
+    vec3 dist = transform.viewPos - sphereData[0].center;
+    float distance = length( dist );
+    float detail = 10;
+
+    if(sphereData[0].radius < distance)
+    {
+        detail *= distance = sphereData[0].radius;
+    }
+
+    gl_TessLevelOuter[0] = 2.0;
+    gl_TessLevelOuter[1] = detail;
+    gl_TessLevelOuter[2] = 2.0;
+    gl_TessLevelOuter[3] = detail;
+    gl_TessLevelInner[0] = detail;
+    gl_TessLevelInner[1] = detail;
+}

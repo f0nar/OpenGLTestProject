@@ -5,28 +5,8 @@
 
 ShaderProgram::ShaderProgram()
     : compiled(false), m_program(0)
-{}
-
-ShaderProgram::ShaderProgram(const std::wstring& vpath, const std::wstring& fpath)
-    :ShaderProgram()
 {
-    load(vpath, fpath);
-}
-
-void ShaderProgram::load(const std::wstring& vpath, const std::wstring& fpath)
-{
-    std::string vertexCode = loadCode(vpath);
-    std::string fragmentCode = loadCode(fpath);
-
-    GLuint vertex = createShader(vertexCode, GL_VERTEX_SHADER);
-    GLuint fragment = createShader(fragmentCode, GL_FRAGMENT_SHADER);
-
-    m_program = createProgram(vertex, fragment);
-
-    compiled = true;
-
-    glDeleteShader(vertex);
-    glDeleteShader(fragment);
+    m_program = glCreateProgram();
 }
 
 void ShaderProgram::use() const
@@ -79,14 +59,23 @@ GLuint ShaderProgram::createShader(const std::string& sCode, GLenum shader_t) co
     return shader;
 }
 
-GLuint ShaderProgram::createProgram(GLuint vertex, GLuint fragment) const
+bool ShaderProgram::attach(const std::wstring& vpath, GLenum shader_t)
 {
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vertex);
-    glAttachShader(program, fragment);
-    glLinkProgram(program);
+    std::string shaderSrc = std::move(loadCode(vpath));
+    GLuint shader = createShader(shaderSrc, shader_t);
+    glAttachShader(m_program, shader);
+    
+    int status =  ShaderStatus(shader, GL_COMPILE_STATUS);
 
-    ShaderProgramStatus(program, GL_LINK_STATUS);
+    if (status)
+        glDeleteShader(shader);
 
-    return program;
+    return status;
+}
+
+bool ShaderProgram::link()
+{
+    glLinkProgram(m_program);
+
+    return compiled = ShaderProgramStatus(m_program, GL_LINK_STATUS);
 }

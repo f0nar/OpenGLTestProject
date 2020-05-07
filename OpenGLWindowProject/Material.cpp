@@ -33,7 +33,7 @@ void Material::set(const ShaderProgram& program) const
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	glUniform1i(glGetUniformLocation(program, "material.texture"), 0);
+	glUniform1i(glGetUniformLocation(program,  "material.texture"),   0);
 	glUniform4fv(glGetUniformLocation(program, "material.ambient"),   1, glm::value_ptr(m_ambient));
 	glUniform4fv(glGetUniformLocation(program, "material.diffuse"),   1, glm::value_ptr(m_diffuse));
 	glUniform4fv(glGetUniformLocation(program, "material.specular"),  1, glm::value_ptr(m_specular));

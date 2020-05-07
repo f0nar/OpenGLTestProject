@@ -163,7 +163,7 @@ void Sphere::initGLData()
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, m_tbo);
 
     int stride = sizeof(Vertex), offset = 0;
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)offset);
     offset += sizeof(glm::vec3);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)offset);
     offset += sizeof(glm::vec3);

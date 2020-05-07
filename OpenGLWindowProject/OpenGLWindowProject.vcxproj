@@ -157,6 +157,7 @@
     <ClCompile Include="OpenGL.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="SmartSphere.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Simple3DObject.h" />
+    <ClInclude Include="SmartSphere.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture.h" />

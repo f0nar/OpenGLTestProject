@@ -84,4 +84,6 @@ extern PFNGLUNIFORM3FVPROC		   glUniform3fv;
 extern PFNGLTEXBUFFERPROC	  glTexBuffer;
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 
+extern PFNGLPATCHPARAMETERIPROC glPatchParameteri;
+
 #endif /* OPENGL_H */

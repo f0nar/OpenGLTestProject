@@ -22,6 +22,7 @@ uniform struct PointLight
 	vec4 specular;
 	vec3 attenuation;
 } light;
+
 out Vertex{
 	vec2 texcoord;
 	vec3 normal;

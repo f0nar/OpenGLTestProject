@@ -1,0 +1,49 @@
+#version 410 core
+
+layout(quads, equal_spacing, ccw) in;
+
+uniform struct Transform
+{
+	mat4 model;
+	mat4 view;
+	mat4 projection;
+	mat3 normal;
+	vec3 viewPos;
+} transform;
+
+uniform struct Light
+{
+	vec4 ambient;
+	vec4 diffuse;
+	vec4 specular;
+	vec4 position;
+} light;
+
+out Vertex
+{
+	vec2 texcoord;
+	vec3 normal;
+	vec3 lightDir;
+	vec3 viewDir;
+} vertex;
+
+const float PI = 3.14159265;
+
+void main(void)
+{
+   float u = gl_TessCoord.x;
+   float v = gl_TessCoord.y;
+
+   float phi   = PI * (u - 0.5);
+   float theta = 2.0 * PI * (v - 0.5);
+   float cosphi = cos(phi);
+
+   vec4 vert = vec4(cosphi * cos(theta), sin(phi), cosphi * sin(theta), 1.0);
+
+   vertex.texcoord = vec2(u, v);
+   vertex.normal   = transform.normal * vec3(vert);
+   vertex.lightDir = vec3(light.position);
+   vert = transform.model * vert;
+   vertex.viewDir  = transform.viewPos - vec3(vert);
+   gl_Position = transform.projection * transform.view * vert;
+}
